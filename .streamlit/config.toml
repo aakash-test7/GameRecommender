@@ -1,0 +1,28 @@
+[theme]
+# Base theme (light or dark)
+base = "light"
+
+# Light blue accent color
+primaryColor = "#4b9cd3"
+
+# Background colors
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+
+# Text colors
+textColor = "#31333f"
+linkColor = "#4b9cd3"
+
+# Code block
+codeBackgroundColor = "#f0f2f6"
+
+# Fonts
+font = "sans-serif"
+codeFont = "monospace"
+headingFont = "sans-serif"
+
+# UI elements
+baseRadius = "0.5rem"
+borderColor = "#e0e2e6"
+showWidgetBorder = true
+showSidebarBorder = true
