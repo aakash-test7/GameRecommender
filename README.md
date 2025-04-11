@@ -9,7 +9,11 @@
 A content-based game recommendation system that suggests similar games based on either:
 - An existing game in the database
 - Custom game features provided by the user
-                
+
+🔗 **Live Demo:** [Game Recommendations](https://aakash-game.streamlit.app/)  
+
+[![Demo Video](demo.png)](https://youtu.be/suKG0wqaRpk?)
+
 ## Features ✨
 
 - **Dual Recommendation Methods**:
