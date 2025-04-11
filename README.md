@@ -43,9 +43,9 @@ game-recommender/
 │   └── one_hot_columns.pkl     # One-hot encoded columns
 ├── .streamlit/
 │   ├── config.toml             # Streamlit configuration
-│   └── secrets.toml           # GCP credentials (ignored in git)
+│   └── secrets.toml            # GCP credentials (ignored in git)
 ├── app.py                      # Main Streamlit application
-├── game_recommender.py         # Recommendation engine
+├── backend.py                  # Recommendation engine
 ├── requirements.txt            # Python dependencies
 └── README.md                   # This file
 ```
@@ -54,7 +54,7 @@ game-recommender/
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/game-recommender.git
+   git clone https://github.com/aakash-test7/GameRecommender.git
    cd game-recommender
    ```
 
