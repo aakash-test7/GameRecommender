@@ -5,11 +5,12 @@ import joblib
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import plotly.express as px
+import io
 import os
 from google.cloud import storage
 from google.oauth2 import service_account
 
-# Initialize GCS client with error handling
+# Initialize GCS client
 def init_gcs_client():
     try:
         secrets = st.secrets["gcp_service_account"]
@@ -19,78 +20,50 @@ def init_gcs_client():
         st.error(f"Failed to initialize GCS client: {str(e)}")
         return None
 
-# Initialize client (do this once at app startup)
+# Initialize client
 client = init_gcs_client()
-bucket_name = "recommender-ak27"  # Your bucket name
-
-def download_model_from_gcs(blob_name, local_path=None):
-    """Downloads a file from GCS to local storage."""
-    if not client:
-        return None
-        
-    try:
-        bucket = client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-        
-        if not blob.exists():
-            st.error(f"Model file {blob_name} not found in GCS")
-            return None
-            
-        if not local_path:
-            local_path = os.path.join("models", os.path.basename(blob_name))
-            
-        os.makedirs(os.path.dirname(local_path), exist_ok=True)
-        blob.download_to_filename(local_path)
-        return local_path
-    except Exception as e:
-        st.error(f"Failed to download model: {str(e)}")
-        return None
+bucket_name = "recommender-ak27"
 
 @st.cache_resource
 def load_models_and_data():
-    """Load all necessary models and data files"""
-    # Download files from GCS if needed
-    required_files = {
-        'knn_model': 'models/game_recommender_knn_model.pkl',
-        'cosine_matrix': 'models/cosine_sim_matrix.pkl',
-        'processed_data': 'models/game_data_processed.pkl',
-        'game_names': 'models/game_names.pkl',
-        'scaler': 'models/minmax_scaler.pkl',
-        'one_hot_columns': 'models/one_hot_columns.pkl'
-    }
-    
-    # Download files from GCS
-    local_paths = {}
-    for name, remote_path in required_files.items():
-        local_path = download_model_from_gcs(remote_path)
-        if not local_path:
-            st.error(f"Failed to download {name} from GCS")
-            return None
-        local_paths[name] = local_path
-    
-    # Load all components
+    """Load all necessary models and data files directly from GCS"""
+    if not client:
+        st.error("GCS client not initialized")
+        return None
+
     try:
-        # Load recommender models
+        bucket = client.bucket(bucket_name)
+        
+        # Load recommenders
         knn_rec = GameRecommender(model_type='knn')
-        knn_rec.load(
-            model_path=local_paths['knn_model'],
-            data_path=local_paths['processed_data']
+        knn_rec.load_from_gcs(
+            storage_client=client,
+            bucket_name=bucket_name,
+            model_path='models/game_recommender_knn_model.pkl',
+            data_path='models/game_data_processed.pkl'
         )
 
         cosine_rec = GameRecommender(model_type='cosine')
-        cosine_rec.load(
-            model_path=local_paths['knn_model'],  # KNN model still needed for data alignment
-            data_path=local_paths['processed_data'],
-            similarity_matrix_path=local_paths['cosine_matrix']
+        cosine_rec.load_from_gcs(
+            storage_client=client,
+            bucket_name=bucket_name,
+            model_path='models/game_recommender_knn_model.pkl',
+            data_path='models/game_data_processed.pkl',
+            similarity_matrix_path='models/cosine_sim_matrix.pkl'
         )
         
         # Load additional components
-        scaler = joblib.load(local_paths['scaler'])
-        one_hot_columns = joblib.load(local_paths['one_hot_columns'])
-        game_names = joblib.load(local_paths['game_names'])
+        def load_from_gcs(path):
+            blob = bucket.blob(path)
+            return joblib.load(io.BytesIO(blob.download_as_bytes()))
         
-        # Load complete game data
-        complete_game_data = pd.read_csv('data/games.csv')
+        scaler = load_from_gcs('models/minmax_scaler.pkl')
+        one_hot_columns = load_from_gcs('models/one_hot_columns.pkl')
+        game_names = load_from_gcs('models/game_names.pkl')
+        
+        # Load game data
+        games_blob = bucket.blob('data/games.csv')
+        complete_game_data = pd.read_csv(io.BytesIO(games_blob.download_as_bytes()))
         
         return {
             'knn_recommender': knn_rec,
@@ -111,6 +84,10 @@ if not data_models:
     st.error("Failed to initialize application. Please check the logs.")
     st.stop()
 
+# Rest of your existing code remains the same...
+
+# Rest of your code remains the same...
+# [Keep all your existing functions like preprocess_user_input, display_recommendations, etc.]
 # Assign to variables for easier access
 knn_recommender = data_models['knn_recommender']
 cosine_recommender = data_models['cosine_recommender']
@@ -153,27 +130,30 @@ def preprocess_user_input(user_input):
     
     return processed_data.values[0]  # Return as numpy array
 # First, add this at the top with your other imports
-import pandas as pd
 
 # Load the complete game data (add this where you load your other data)
-@st.cache_data
 # Modify to load from GCS if local file not found
 def load_game_data():
     try:
-        local_path = "data/games.csv"
-        if os.path.exists(local_path):
-            return pd.read_csv(local_path)
-        else:
-            # Download from Google Cloud Storage
-            from google.cloud import storage
-            client = storage.Client()
-            bucket = client.get_bucket("recommender-ak27")
-            blob = bucket.blob("data/games.csv")
-            return pd.read_csv(blob.download_as_string())
+        # Initialize GCS client with project ID from secrets
+        secrets = st.secrets["gcp_service_account"]
+        credentials = service_account.Credentials.from_service_account_info(secrets)
+        client = storage.Client(
+            credentials=credentials,
+            project=secrets.get("project_id")  # Make sure project_id is in your secrets
+        )
+        
+        # Access the bucket and file
+        bucket = client.bucket("recommender-ak27")
+        blob = bucket.blob("data/games.csv")
+        
+        # Use download_as_bytes() and create file-like object
+        return pd.read_csv(io.BytesIO(blob.download_as_bytes()))
+        
     except Exception as e:
         st.error(f"Failed to load game data: {str(e)}")
         st.stop()
-
+        
 complete_game_data = load_game_data()
 
 # Then modify your display_recommendations function:
