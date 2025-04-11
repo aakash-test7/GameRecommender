@@ -157,8 +157,22 @@ import pandas as pd
 
 # Load the complete game data (add this where you load your other data)
 @st.cache_data
+# Modify to load from GCS if local file not found
 def load_game_data():
-    return pd.read_csv('data/games.csv')
+    try:
+        local_path = "data/games.csv"
+        if os.path.exists(local_path):
+            return pd.read_csv(local_path)
+        else:
+            # Download from Google Cloud Storage
+            from google.cloud import storage
+            client = storage.Client()
+            bucket = client.get_bucket("recommender-ak27")
+            blob = bucket.blob("data/games.csv")
+            return pd.read_csv(blob.download_as_string())
+    except Exception as e:
+        st.error(f"Failed to load game data: {str(e)}")
+        st.stop()
 
 complete_game_data = load_game_data()
 
