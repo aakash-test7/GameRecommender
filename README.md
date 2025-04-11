@@ -45,7 +45,8 @@ game-recommender/
 │   ├── config.toml             # Streamlit configuration
 │   └── secrets.toml            # GCP credentials (ignored in git)
 ├── app.py                      # Main Streamlit application
-├── backend.py                  # Recommendation engine
+├── backend.py                  # Important functions and connectors
+├── game_recommender.py         # Recommendation engine
 ├── requirements.txt            # Python dependencies
 └── README.md                   # This file
 ```
