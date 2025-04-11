@@ -1,5 +1,6 @@
 import joblib
 from sklearn.metrics.pairwise import cosine_similarity
+import io
 
 class GameRecommender:
     def __init__(self, model_type='knn'):
@@ -9,13 +10,32 @@ class GameRecommender:
         self.game_names = None
         self.similarity_matrix = None
 
-    def load(self, model_path, data_path, similarity_matrix_path=None):
-        self.model = joblib.load(model_path)
-        self.data = joblib.load(data_path)
+    def load_from_gcs(self, storage_client, bucket_name, model_path, data_path, similarity_matrix_path=None):
+        """Load models and data directly from GCS bucket"""
+        bucket = storage_client.bucket(bucket_name)
+        
+        # Load model
+        model_blob = bucket.blob(model_path)
+        self.model = joblib.load(io.BytesIO(model_blob.download_as_bytes()))
+        
+        # Load data
+        data_blob = bucket.blob(data_path)
+        self.data = joblib.load(io.BytesIO(data_blob.download_as_bytes()))
         self.game_names = self.data.index.tolist()
 
         if self.model_type == 'cosine' and similarity_matrix_path:
-            self.similarity_matrix = joblib.load(similarity_matrix_path)
+            # Load similarity matrix
+            sim_blob = bucket.blob(similarity_matrix_path)
+            self.similarity_matrix = joblib.load(io.BytesIO(sim_blob.download_as_bytes()))
+
+    def load_from_bytes(self, model_bytes, data_bytes, similarity_matrix_bytes=None):
+        """Load models and data from bytes objects"""
+        self.model = joblib.load(io.BytesIO(model_bytes))
+        self.data = joblib.load(io.BytesIO(data_bytes))
+        self.game_names = self.data.index.tolist()
+
+        if self.model_type == 'cosine' and similarity_matrix_bytes:
+            self.similarity_matrix = joblib.load(io.BytesIO(similarity_matrix_bytes))
 
     def recommend(self, game_name, n_recommendations=5):
         if game_name not in self.game_names:
