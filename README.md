@@ -88,7 +88,7 @@ game-recommender/
 
 4. **Prepare data files**:
    - Place `games.csv` in the `data/` directory
-   - Ensure model files are in your GCS bucket `recommender-ak27`
+   - Ensure model files are in your GCS bucket `recommender-27`
 
 ## Usage 🚀
 
