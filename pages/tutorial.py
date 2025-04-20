@@ -15,7 +15,7 @@ def tutorial_page():
             return None
             
         try:
-            bucket = client.bucket("recommender-ak27")
+            bucket = client.bucket("recommender-27")
             blob = bucket.blob(blob_name)
             
             if not blob.exists():
