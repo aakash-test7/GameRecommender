@@ -144,7 +144,7 @@ def load_game_data():
         )
         
         # Access the bucket and file
-        bucket = client.bucket("recommender-ak27")
+        bucket = client.bucket("recommender-27")
         blob = bucket.blob("data/games.csv")
         
         # Use download_as_bytes() and create file-like object
