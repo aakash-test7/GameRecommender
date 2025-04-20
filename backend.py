@@ -22,7 +22,7 @@ def init_gcs_client():
 
 # Initialize client
 client = init_gcs_client()
-bucket_name = "recommender-ak27"
+bucket_name = "recommender-27"
 
 @st.cache_resource
 def load_models_and_data():
