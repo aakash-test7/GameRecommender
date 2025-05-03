@@ -18,7 +18,7 @@ def home_page():
         }
     </style>
     """, unsafe_allow_html=True)
-    st.markdown('<h1 class="center-title" style="font-size: 8rem;">GAME RECOMMENDATION SYSTEM</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="center-title" style="font-size: 6rem;">GAME RECOMMENDATION SYSTEM</h1>', unsafe_allow_html=True)
 
     st.markdown("""<style>.stVerticalBlock.st-key-rest1container {background-color: #f4f4f9;padding: 30px;border-radius: 15px;} </style>""", unsafe_allow_html=True)
     con=st.container(border=False, key="rest1container")
