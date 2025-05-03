@@ -1,5 +1,5 @@
 import streamlit as st
-st.set_page_config(page_icon=":material/robot_2:",layout="wide",page_title="Game Recommender",menu_items={"About":"https://github.com/aakash-test7/"},initial_sidebar_state="collapsed")
+st.set_page_config(page_icon=":material/robot_2:",layout="wide",page_title="TechWillxGame",menu_items={"About":"https://github.com/aakash-test7/"},initial_sidebar_state="collapsed")
 from streamlit_navigation_bar import st_navbar
 import pages as pg
 from pages.security_login import update_visitor_count
@@ -19,7 +19,7 @@ options={"use_padding": False, "show_menu":False}
 
 styles = {
     "nav": {
-        "background-color": "rgb(75, 156, 211)",  # Background color of the navigation bar
+        "background-color": "rgba(75, 156, 211,0)",  # Background color of the navigation bar
         "height": "4rem",  # Set the total height of the navigation bar
         "display": "flex",  # Use flexbox for layout
         "align-items": "center",  # Vertically center the items
@@ -41,10 +41,10 @@ styles = {
         "text-transform": "uppercase",  # Convert heading text to uppercase
     },
     "active": {
-        "background-color": "rgba(255, 255, 255, 0.25)",  # Background color for the active heading
+        "background-color": "rgba(173, 216, 230, 0.5)",  # Light blue background for the active state
     },
     "hover": {
-        "background-color": "rgba(255, 255, 255, 0.35)",  # Background color on hover
+        "background-color": "rgba(173, 216, 230, 0.3)",
     },
     "img": {  # This targets the logo image specifically
             "width": "50px",  # You can increase or decrease this as needed
@@ -75,6 +75,14 @@ page = st_navbar(pages, logo_path=logo_path, urls=urls, styles=styles, options=o
 if page != st.session_state.current_page:
     st.session_state.current_page = page
 #st.sidebar.markdown("---")  # Adds a separator
+st.markdown("""
+    <style>
+        /* Change the background color of the sidebar */
+        .stSidebar {
+            background-color: #4b9cd3 !important;  /* Set the background to a light blue */
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 #visitor
 if 'first_access' not in st.session_state:
