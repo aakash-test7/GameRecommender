@@ -15,7 +15,7 @@ st.markdown("""
 pages = ["Home", "Recommend", "Tutorial", "About","Aakash"]
 logo_path = ("logo.svg")
 urls = {"Aakash": "https://linkedin.com/in/aakash-kharb/"}
-options={"use_padding": True, "show_menu":False}
+options={"use_padding": False, "show_menu":False}
 
 styles = {
     "nav": {
