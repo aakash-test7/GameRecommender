@@ -2,10 +2,23 @@ import streamlit as st
 #from pages.home import home_html
 
 def home_page():
-    st.markdown("""<style>.stVerticalBlock.st-key-main1container {background-color: #f4f4f9;padding: 30px;border-radius: 15px;} </style>""", unsafe_allow_html=True)
-    con=st.container(border=False, key="main1container",height=200)
-    with con:
-        st.title("Game Recommendation System")
+    st.markdown("""<style>
+        .center-title {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 2rem;
+        }
+        .footer {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 3rem;
+            border-radius: 8px;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    st.markdown('<h1 class="center-title" style="font-size: 8rem;">GAME RECOMMENDATION SYSTEM</h1>', unsafe_allow_html=True)
 
     st.markdown("""<style>.stVerticalBlock.st-key-rest1container {background-color: #f4f4f9;padding: 30px;border-radius: 15px;} </style>""", unsafe_allow_html=True)
     con=st.container(border=False, key="rest1container")
@@ -73,6 +86,12 @@ def home_page():
             - Google Cloud • Railway • MySQL  
             - Plotly • Pandas • Joblib """)
 
+    # Footer
+    st.markdown("""
+    <div class="footer">
+        © Aakash Kharb
+    </div>
+    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     home_page()
