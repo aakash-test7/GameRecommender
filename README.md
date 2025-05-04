@@ -12,7 +12,7 @@ A content-based game recommendation system that suggests similar games based on 
 
 🔗 **Live Demo:** [Game Recommendations](https://aakash-game.streamlit.app/)  
 
-[![Demo Video](demo.png)](https://youtu.be/suKG0wqaRpk?)
+[![Demo Video](demo.png)](https://youtu.be/MA6QOu6UrP0)
 
 ## Features ✨
 
