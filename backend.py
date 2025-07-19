@@ -22,7 +22,7 @@ def init_gcs_client():
 
 # Initialize client
 client = init_gcs_client()
-bucket_name = "recommender-27"
+bucket_name = "recommender-3"
 
 @st.cache_resource
 def load_models_and_data():
@@ -144,7 +144,7 @@ def load_game_data():
         )
         
         # Access the bucket and file
-        bucket = client.bucket("recommender-27")
+        bucket = client.bucket("recommender-3")
         blob = bucket.blob("data/games.csv")
         
         # Use download_as_bytes() and create file-like object
